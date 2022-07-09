@@ -200,7 +200,7 @@ def get_anime_objects(anime_id_list):
 
 
 # Doesn't call the API
-def get_value_from_object_list(anime_list, key):
+def get_value_from_anime_list(anime_list, key):
     values = []
     for anime in anime_list:
         values.append(anime[key])
