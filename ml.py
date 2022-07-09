@@ -26,7 +26,7 @@ def create_validation_dataset(dataset):
 
 
 # For regression (not classifier)
-def build_models(x_train, y_train):
+def compare_models(x_train, y_train):
     models = []
     models.append(('SGD', linear_model.SGDRegressor()))
     models.append(('BR', linear_model.BayesianRidge()))
@@ -39,11 +39,12 @@ def build_models(x_train, y_train):
 
     results = []
     names = []
-    output = []
     for name, model in models:
         kfold = KFold(n_splits=10, random_state=1, shuffle=True)
         cv_results = cross_val_score(model, x_train, y_train, cv=kfold, scoring='neg_mean_squared_error')
         results.append(cv_results)
         names.append(name)
-        output.append('%s: %f (%f)' % (name, cv_results.mean(), cv_results.std()))
-    return output
+        print('%s: %f (%f)' % (name, cv_results.mean(), cv_results.std()))
+    pyplot.boxplot(results, labels=names)
+    pyplot.title('Algorithm Comparison')
+    pyplot.show()
