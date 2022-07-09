@@ -122,7 +122,7 @@ def get_anime_ids(user):
 
 def get_anime_synopses(user):
     synopses = []
-    ids = get_anime_ids('@me')
+    ids = get_anime_ids(user)
     for id in ids:
         url = f'https://api.myanimelist.net/v2/anime/{id}?fields=synopsis'
         response = requests.get(url, headers={
@@ -136,3 +136,21 @@ def get_anime_synopses(user):
         synopses.append(data['synopsis'])
 
     return synopses
+
+
+def get_anime_score_means(user):
+    scores = []
+    ids = get_anime_ids(user)
+    for id in ids:
+        url = f'https://api.myanimelist.net/v2/anime/{id}?fields=synopsis,mean'
+        response = requests.get(url, headers={
+            'Authorization': f'Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiIsImp0aSI6ImNjY2VhNTg0OTlkMjAwZTRiMjQ5ZTlkYTA5NjhhZGU0ODA5YWM5ZTA1MzNjZDBiNjU3NWZjZDc1MGJlYTAyMGEzNmQ4N2U2NTMwODdmZjgxIn0.eyJhdWQiOiJjYmFkYzAwYjA4YmNlZjU4NzdkNzUwNGI4NWY2ZTM1ZSIsImp0aSI6ImNjY2VhNTg0OTlkMjAwZTRiMjQ5ZTlkYTA5NjhhZGU0ODA5YWM5ZTA1MzNjZDBiNjU3NWZjZDc1MGJlYTAyMGEzNmQ4N2U2NTMwODdmZjgxIiwiaWF0IjoxNjU3MjQ4ODIwLCJuYmYiOjE2NTcyNDg4MjAsImV4cCI6MTY1OTkyNzIyMCwic3ViIjoiODMwOTQzNSIsInNjb3BlcyI6W119.pbHU2gssDOjERlXIEcO-uxpOuCykx-zzdXRSK45jNdZ3pDFXEZ5o8WcyGR4EXJiNY1WP_rogvES-sjgUAfVoM4ZuesrkgWUcTNQGVvGaJlH5pu6k4w1peDZMCkCLxFvgNsMue38MOOT5hP3IWNRYDVk7iMy3mJnRbeJTEhrhMuPdvOO30IdKws1SFFphCj9iG_aG5pibZ9QucXNyoLMrUPBsLLf-gZN5SKddr8yroqyS_Gv7fa7bnCmPdNaVB-4I9s91fPIfbUI65fKGR4oJITfUus-RiyUuyZQ-p9U-351ettNRk_bxCXyonT4ODVAxbgyw9kUAjXmKCtgmz3rTgg'
+        })
+
+        response.raise_for_status()
+        data = response.json()
+        response.close()
+
+        scores.append(data['mean'])
+
+    return scores
