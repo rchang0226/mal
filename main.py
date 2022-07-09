@@ -1,10 +1,12 @@
 from matplotlib import pyplot
-
+from sklearn import svm
+from sklearn.metrics import classification_report
+from sklearn.metrics import mean_squared_error
+from sklearn.metrics import r2_score
 import mal
 import bow
 from pandas import read_csv
 from IPython.display import display
-
 import ml
 
 
@@ -33,8 +35,8 @@ if __name__ == '__main__':
     # split the dataset
     x_train, x_validation, y_train, y_validation = ml.create_validation_dataset(df)
 
-    # compare different algorithms
-    ml.compare_models(x_train, y_train)
+    """# compare different algorithms
+    ml.compare_models(x_train, y_train)"""
 
     # From the results, ['SGD: -4.982397 (3.225995)', 'BR: -0.225578 (0.147847)', 'LL: -0.187104 (0.117122)',
     # 'ARD: -0.356156 (0.273288)', 'PA: -5.262207 (3.244099)', 'SVM: -5.277980 (3.277356)', 'Linear: -0.226402 (
@@ -42,9 +44,11 @@ if __name__ == '__main__':
     # it seems that SVR was the best.
     # The worst were SGD, PA, and SVM.
 
+    # make prediction on validation dataset
+    model = svm.SVR()
+    model.fit(x_train, y_train)
+    predictions = model.predict(x_validation)
 
-
-
-
-
-
+    # evaluate predictions
+    print(r2_score(y_validation, predictions))
+    print(mean_squared_error(y_validation, predictions))
