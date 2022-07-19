@@ -1,3 +1,4 @@
+import requests
 from matplotlib import pyplot
 from sklearn import svm
 from sklearn.metrics import classification_report
@@ -8,6 +9,9 @@ import bow
 from pandas import read_csv
 from IPython.display import display
 import ml
+import decorators
+from functools import reduce
+import time
 
 
 def generate_my_data():
@@ -17,7 +21,17 @@ def generate_my_data():
 
 # Gets a random list of anime and returns a list of synopsis and a list of means
 def generate_random_data():
-    anime_list = mal.get_random_anime_list(100, 0, 10000)
+    random_numbers = mal.get_random_numbers(1200, 0, 10000)
+    chunks = [random_numbers[x:x + 100] for x in range(0, len(random_numbers), 100)]
+    anime_list = []
+    for num, chunk in enumerate(chunks):
+        primitive_obj_list = [mal.get_anime_by_rank(num) for num in chunk]
+        id_list = [x['id'] for x in primitive_obj_list]
+        obj_list = mal.get_anime_objects(id_list)
+        anime_list.extend(obj_list)
+        print(f"batch #{num} done")
+        time.sleep(180)
+
     return mal.get_value_from_anime_list(anime_list, 'synopsis'), mal.get_value_from_anime_list(anime_list, 'mean')
 
 
@@ -34,11 +48,10 @@ def save_bow_rep(synopses, scores, name):
 
 if __name__ == '__main__':
     """synopses, scores = generate_random_data()
-    save_bow_rep(synopses, scores, 'random_list_100.csv')"""
+    save_bow_rep(synopses, scores, 'random_list_1200.csv')"""
 
-
-    """# read the csv
-    df = read_csv('my_list.csv')
+    # read the csv
+    df = read_csv('random_list_1200.csv')
 
     # need to remove the first column for some reason, has to do with how I saved the csv I think
     df = df.drop(df.columns[[0]], axis=1)
@@ -46,8 +59,8 @@ if __name__ == '__main__':
     # split the dataset
     x_train, x_validation, y_train, y_validation = ml.create_validation_dataset(df)
 
-  # compare different algorithms
-    ml.compare_models(x_train, y_train)
+    """# compare different algorithms
+    ml.compare_models(x_train, y_train)"""
 
     # From the results, ['SGD: -4.982397 (3.225995)', 'BR: -0.225578 (0.147847)', 'LL: -0.187104 (0.117122)',
     # 'ARD: -0.356156 (0.273288)', 'PA: -5.262207 (3.244099)', 'SVM: -5.277980 (3.277356)', 'Linear: -0.226402 (
@@ -62,4 +75,4 @@ if __name__ == '__main__':
 
     # evaluate predictions
     print(r2_score(y_validation, predictions))
-    print(mean_squared_error(y_validation, predictions))"""
+    print(mean_squared_error(y_validation, predictions))
