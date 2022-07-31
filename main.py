@@ -95,9 +95,19 @@ if __name__ == '__main__':
 
     y = np.array([0 if x == -1 else x for x in filtered_scores])
 
+    # also create a sequence with only negative reviews (to check for positive bias since there are significantly
+    # more positive than negative reviews)
+    neg = [(x, score) for x, score in zip(X, [0 if x == -1 else x for x in filtered_scores]) if score == 0]
+    neg_X = np.array([x for x, score in neg])
+    neg_y = np.array([score for x, score in neg])
+
     # load model
     model = load_model('model.h5')
 
     # evaluate the model
     score = model.evaluate(X, y, verbose=0)
     print("%s: %.2f%%" % (model.metrics_names[1], score[1] * 100))
+
+    # evaluate the model on negative only
+    score_neg = model.evaluate(neg_X, neg_y, verbose=0)
+    print("%s: %.2f%%" % (model.metrics_names[1], score_neg[1] * 100))
