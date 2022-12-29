@@ -13,5 +13,3 @@ Next, I looked towards performing sentiment analysis on anime reviews by users o
 The model had an accuracy of 84% on the anime review set, which is very close to the original 85% the model had on its original validation test set, so it seems to have performed well in this new context. 
 
 I later realized that significantly more positive reviews than negative ones were pulled from AniList, so in order to ensure that this accuracy wasn't being artificially inflated by the number of positive reviews, I tested the model on only the negative reviews, getting an accuracy of around 75%, which is still on the high end, although there does appear to be a slight positive bias. 
-
-Next, I plan to train a model that tries to predict mean scores based on the script of the anime. 
